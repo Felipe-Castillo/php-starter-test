@@ -12,11 +12,11 @@ require_once '../classes/Post.php';
 if (isset($_GET['edit_id'])) {
     $id = $_GET['edit_id'];
     $rowUser = Post::find($id);
-    $array=$rowUser["data"]["data"];
-    reset($array);
-    $key = key($array);
+   
 
-    $rowUser=$rowUser["data"]["data"][$key];
+    $rowUser=$rowUser["data"];
+
+    
     
 } else {
     $id = null;
@@ -30,24 +30,34 @@ if (isset($_POST['btn_save'])) {
 
     $title = strip_tags($_POST['title']);
     $description = strip_tags($_POST['description']);
+    $post_id= strip_tags($_POST['post_id']);
     
 
     try {
         if ($id != null) {
-            $arr=array("title"=>$title,"description"=>$description,"id"=>$id);
+
+
+            $arr=array("access_token"=>$_SESSION["access_token"],"title"=>$title,"description"=>$description,"id"=>$id,"post_id"=>$post_id);
+            
+
+                
             if (Post::update($arr)) {
                 Post::redirect('../index.php?updated');
             } else {
                 Post::redirect('../index.php?error');
             }
         } else {
+
+
+
+
                 $arr=array("title"=>$title,"description"=>$description);
 
                 $response=Post::insert($arr);
 
                
-                
-            if ($response['code'=='202']) 
+                        
+            if ($response['status']=='ok') 
             {
                 Post::redirect('../index.php?inserted');
             } else {
@@ -76,15 +86,15 @@ if (isset($_POST['btn_save'])) {
                     <h1 style="margin-top: 10px">Post</h1>
                     <p>Required fields are in (*).</p>
                     <form method="post">
-                                     
+                    <input type="hidden" name="post_id" value="<?php echo $rowUser['id']; ?>">
                         <div class="form-group">
                             <label for="title">Name *</label>
-                            <input type="text" class="form-control" id="title" name="title" value=" <?php echo (isset($rowUser['document']['name']))?print($rowUser['document']['name']):''; ?>" placeholder="name" required maxlength="100">
+                            <input type="text" required  class="form-control" id="title" name="title" value=" <?php echo (isset($rowUser['document']['title']))? $rowUser['document']['title']:''; ?>" placeholder="title">
                         </div>  
                         <div class="form-group">
                             <label for="description">Description *</label>
 
-                            <textarea class="form-control" required name="description"><?php echo (isset($rowUser['document']['description']))?print($rowUser['document']['description']):''; ?></textarea>
+                            <textarea class="form-control" required name="description"><?php echo (isset($rowUser['document']['description']))? $rowUser['document']['description']:''; ?></textarea>
                            
                         </div>  
                         <input type="submit" name="btn_save" class="btn btn-primary mb-2" value="Save">

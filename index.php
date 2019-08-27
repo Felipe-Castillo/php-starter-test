@@ -1,4 +1,5 @@
 <?php
+session_start();
 // Show PHP errors
 ini_set('display_errors',1);
 ini_set('display_startup_erros',1);
@@ -7,6 +8,9 @@ require_once 'classes/Post.php';
 // GET
 if (isset($_GET['delete_id'])) {
     $id = $_GET['delete_id'];
+
+
+
     try {
         if ($id != null) {
 
@@ -50,21 +54,21 @@ if (isset($_GET['delete_id'])) {
                     <?php 
                         if (isset($_GET['updated'])) {
                             echo '<div class="alert alert-info alert-dismissible fade show" role="alert">
-                                    <strong>User!</strong> Updated with success.
+                                    <strong>Post!</strong> Updated with success.
                                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
                                   </div>';
                         } else if (isset($_GET['deleted'])) {
                             echo '<div class="alert alert-warning alert-dismissible fade show" role="alert">
-                                    <strong>User!</strong> Deleted with success.
+                                    <strong>Post!</strong> Deleted with success.
                                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
                                   </div>';
                         } else if (isset($_GET['inserted'])) {
                             echo '<div class="alert alert-success alert-dismissible fade show" role="alert">
-                                    <strong>User!</strong> Inserted with success.
+                                    <strong>Post!</strong> Inserted with success.
                                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
@@ -85,29 +89,28 @@ if (isset($_GET['delete_id'])) {
                                 <tr>
                                     <th>#</th>
                                     <th>title</th>
-                                    <th>email</th>
+                                    <th>Description</th>
                                     <th></th>
                                 </tr>
                             </thead>
                        
                             <tbody>
                             <?php
-
                                 $posts=Post::get();
                             ?>  
                              <?php 
                              if (!empty($posts)) {
                              foreach ($posts["data"]["data"] as $key => $value){ ?>
                             <tr>
-                                <td><?php print($value["id"]); ?></td>
+                                <td><?php echo $value["id"]; ?></td>
                                 <td>
-                                    <a href="forms/post_form.php?edit_id=<?php print($value['entity']['id']); ?>">
-                                        <?php echo (isset($value['document']['name']))?print($value['document']['name']):'----'; ?>
+                                    <a href="forms/post_form.php?edit_id=<?php print($value['id']); ?>">
+                                        <?php echo (isset($value['document']['title']))?$value['document']['title']:'----'; ?>
                                     </a>
                                 </td>
-                                <td><?php print($value['document']['description']); ?></td>
+                                <td><?php echo $value['document']['description']; ?></td>
                                 <td>
-                                    <a class="confirmation" href="index.php?delete_id=<?php print($value['entity']['id']); ?>">
+                                    <a class="confirmation" href="index.php?delete_id=<?php echo $value['id']; ?>">
                                         <span data-feather="trash"></span>
                                     </a>
                                 </td>
